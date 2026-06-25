@@ -1,27 +1,28 @@
 import requests
 
-chat = input("Enter Prompt: ")
+messages = []
 
-try:
+while True:
+    prompt = input("You: ")
+    
+    messages.append({
+        "role": "user",
+        "content" : prompt
+    })
+    
     response = requests.post(
         "http://localhost:11434/api/chat",
         json={
-            "model": "qwen2.5-coder:3b",
-            "messages": [
-                {
-                    "role" : "user",
-                    "content" : chat
-                }
-            ],
-            "stream": False
-        },
-        timeout=60
+            "model" : "qwen2.5-coder:3b",
+            "messages" : messages,
+            "stream" : False
+        }
     )
     
-    response.raise_for_status()
+    ai = response.json()['message']['content']
+    print("AI:", ai)
     
-    data = response.json()
-    print("\nAI: ", data['message']['content'])
-
-except requests.exceptions.RequestException as e:
-    print(f"Request failed: {e}")
+    messages.append({
+        "role": "assistant",
+        "content" : ai
+    })
