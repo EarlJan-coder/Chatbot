@@ -10,6 +10,9 @@ while True:
         print("Exiting chat.")
         break
     
+    if not prompt:
+        continue
+    
     messages.append({
         "role": "user",
         "content" : prompt
@@ -53,7 +56,7 @@ while True:
         })
     
     except requests.exceptions.Timeout:
-        print("Error: Requested Timeout. Server may be unresponsive>")
+        print("Error: Request Timed out. Server may be unresponsive.")
         messages.pop()
         
     except requests.exceptions.RequestException as e:
