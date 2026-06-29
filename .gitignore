@@ -1,2 +1,7 @@
 *.json
+# Environment files
 .env
+.env.local
+.env.*.local
+.env.development.local
+.env.production.local
