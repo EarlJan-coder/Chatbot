@@ -10,5 +10,9 @@ def main():
     )
     bot.chat()
     
+    
+    if not bot.ollama_url or not bot.model:
+        raise ValueError("Missing key")
+    
 if __name__ == "__main__":
     main()
