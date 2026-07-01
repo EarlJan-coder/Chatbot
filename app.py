@@ -8,11 +8,14 @@ def main():
         timeout=config.TIMEOUT,
         save_file=config.SAVE_FILE,
     )
-    bot.chat()
-    
     
     if not bot.ollama_url or not bot.model:
         raise ValueError("Missing key")
+    
+    bot.chat()
+    
+    
+    
     
 if __name__ == "__main__":
     main()
