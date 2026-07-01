@@ -10,6 +10,9 @@ class TerminalUI:
         
     def finish_assistant_output(self):
         print()    
+        
+    def print_message(self, message: str) -> None:
+        print(message)
             
     def print_error(self, message: str) -> None:
         print(message)
