@@ -1,4 +1,5 @@
 from . import config
+from .conversation import Conversation
 from .conversation_storage import ConversationStorage
 from .ollama_client import OllamaClient
 from .terminal_ui import TerminalUI
@@ -14,6 +15,7 @@ class ChatBot:
         ui=None,
         ollama_client=None,
         conversation_storage=None,
+        conversation=None,
     ):
         self.ollama_url = ollama_url
         self.model = model
@@ -27,8 +29,8 @@ class ChatBot:
             timeout=timeout,
         )
         self.conversation_storage = conversation_storage or ConversationStorage(save_file)
-        self.messages = self.conversation_storage.load_conversation()
-        
+        self.conversation = conversation or Conversation(self.conversation_storage)
+                
     def append_message(self, role: str, content: str) -> None:
         self.messages.append({ "role":role, "content":content })
         
@@ -42,17 +44,16 @@ class ChatBot:
             if not prompt:
                 continue
             
-            self.append_message("user", prompt)
+            self.conversation.add_user(prompt)
             
             self.ui.start_assistant_output()
             response_text = self.ollama_client.generate(
-                self.messages, 
-                stream=True, 
-                on_token=self.ui.on_token
+                self.conversation.history,
+                stream=True,
+                on_token=self.ui.on_token,
             )
-            
             self.ui.finish_assistant_output()
             
             if response_text is not None:
-                self.append_message("assistant", response_text)
-                self.conversation_storage.save_conversation(self.messages)
+                self.conversation.add_assistant(response_text)
+                self.conversation.save()
