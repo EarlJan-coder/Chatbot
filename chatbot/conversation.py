@@ -1,5 +1,12 @@
 from .conversation_storage import ConversationStorage
 
+DEFAULT_CONVERSATION = [
+    {
+        "role":"system",
+        "content":"You are a helpful AI assistant"
+     }
+]
+
 class Conversation():
     def __init__(self, storage: ConversationStorage):
         self.storage = storage
@@ -20,3 +27,7 @@ class Conversation():
         
     def save(self) -> None:
         self.storage.save_conversation(self._messages)
+        
+    def reset(self) -> None:
+        self._messages = [dict(m) for m in DEFAULT_CONVERSATION]
+        self.save()

@@ -30,9 +30,6 @@ class ChatBot:
         )
         self.conversation_storage = conversation_storage or ConversationStorage(save_file)
         self.conversation = conversation or Conversation(self.conversation_storage)
-                
-    def append_message(self, role: str, content: str) -> None:
-        self.messages.append({ "role":role, "content":content })
         
     def chat(self):
         while True:
@@ -40,6 +37,11 @@ class ChatBot:
             if prompt.lower() in {"exit", "bye", "quit"}:
                 self.ui.print_exit()
                 break
+            
+            if prompt.lower() == "reset":
+                self.conversation.reset()
+                self.ui.print_message("Conversation reset.")
+                continue
             
             if not prompt:
                 continue
