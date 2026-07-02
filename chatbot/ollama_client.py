@@ -1,5 +1,6 @@
 import requests
 import json
+from .message import Message
 
 class OllamaClient:
     def __init__(self, ollama_url: str, model: str, timeout: int):
@@ -7,13 +8,18 @@ class OllamaClient:
         self.model = model
         self.timeout = timeout
         
-    def generate(self, messages: list[dict], stream: bool, on_token=None) -> str | None:
+    def generate(self, messages: list[Message], stream: bool, on_token=None) -> str | None:
         try:
+            payload_messages = [
+                {"role": message.role, "content": message.content}
+                for message in messages
+            ]
+            
             with requests.post(
                 self.ollama_url,
                 json={
                     "model" : self.model,
-                    "messages" : messages,
+                    "messages" : payload_messages,
                     "stream" : stream,
                 },
                 stream=stream,
